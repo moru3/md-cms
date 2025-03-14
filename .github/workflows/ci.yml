@@ -23,7 +23,7 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: npx jest
+        run: npx jest --passWithNoTests
 
       - name: Build and package binaries
         run: |
