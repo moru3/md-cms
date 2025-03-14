@@ -28,24 +28,6 @@ jobs:
           chmod +x package.sh
           ./package.sh
 
-      - name: Create or update tag
-        run: |
-          if git rev-parse "$GITHUB_REF" >/dev/null 2>&1; then
-            echo "Tag $GITHUB_REF already exists. Skipping tag creation."
-          else
-            git tag $GITHUB_REF
-            git push origin $GITHUB_REF
-          fi
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.ref }}
-          name: Release ${{ github.ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Upload Release Asset - macOS
         uses: softprops/action-gh-release@v1
         with:
