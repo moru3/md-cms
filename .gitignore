@@ -25,9 +25,8 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Package lock and similar files (if not needed to be committed)
-package-lock.json
-yarn.lock
+# Package lock (commit package-lock.json for CI)
+# yarn.lock
 
 # Coverage directory used by testing tools
 coverage/
