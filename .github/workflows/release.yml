@@ -9,7 +9,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v2
 
       - name: Setup Node.js
@@ -17,43 +17,26 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm ci
 
-      - name: Build project
+      - name: Build Project
         run: npm run build
 
-      - name: Package binaries
+      - name: Package Binaries
         run: |
           chmod +x package.sh
           ./package.sh
 
-      - name: Upload Release Asset - macOS
+      - name: Create GitHub Release and Upload Assets
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref }}
-          asset_path: target/md-cms-macos
-          asset_name: md-cms-macos
-          asset_content_type: application/octet-stream
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release Asset - Linux
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.ref }}
-          asset_path: target/md-cms-linux
-          asset_name: md-cms-linux
-          asset_content_type: application/octet-stream
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release Asset - Windows
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.ref }}
-          asset_path: target/md-cms-win.exe
-          asset_name: md-cms-win.exe
-          asset_content_type: application/octet-stream
+          name: Release ${{ github.ref }}
+          body: "Automated release created by GitHub Actions."
+          files: |
+            target/md-cms-macos
+            target/md-cms-linux
+            target/md-cms-win.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
