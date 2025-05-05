@@ -23,8 +23,7 @@ export async function getArticle(articleId: string) {
   try {
     const fileContent = await fs.readFile(indexPath, 'utf8');
     const { data, content: mdContent } = matter(fileContent);
-    const html = marked(mdContent);
-    const htmlBase64 = Buffer.from(html as string).toString('base64');
+    let html = await marked(mdContent);
 
     // images ディレクトリから画像ファイル名を取得
     let images: string[] = [];
@@ -35,6 +34,19 @@ export async function getArticle(articleId: string) {
     } catch (err) {
       // images ディレクトリが存在しない場合は無視
     }
+
+    // devモード時のみimgタグのsrcを書き換え
+    if (process.env.NODE_ENV === 'dev' && images.length > 0) {
+      let imgIdx = 0;
+      html = html.replace(/<img\s+[^>]*src=["'](?:\.?\/)?images\/[^"']+["'][^>]*>/g, (match) => {
+        if (imgIdx < images.length) {
+          return match.replace(/src=["'][^"']+["']/, `src=\"${images[imgIdx++]}\"`);
+        }
+        return match;
+      });
+    }
+
+    const htmlBase64 = Buffer.from(html as string).toString('base64');
 
     return {
       id: data.id || articleId,
